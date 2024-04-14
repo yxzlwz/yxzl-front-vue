@@ -11,8 +11,8 @@
   >
     <n-text tag="div" class="ui-logo" :depth="1">
       <img src="/logo.png" />
-      <!-- <span v-if="!isMobile">异想之旅</span> -->
-      <span>异想之旅</span>
+      <!-- <span v-if="!isMobile"> 异想之旅 </span> -->
+      <span> {{ _('site.name') }} </span>
     </n-text>
     <div
       :style="
@@ -24,7 +24,8 @@
           ref="menuInstRef"
           responsive
           mode="horizontal"
-          :options="menuOptions"
+          :options="headerMenuOptions"
+          @update:value="handleMenuUpdate"
         />
       </div>
       <!-- <n-auto-complete
@@ -50,13 +51,34 @@
         </n-icon>
       </template>
       <div style="overflow: auto; max-height: 79vh">
-        <n-menu :options="menuOptions" :indent="18" />
+        <n-menu
+          :options="headerMenuOptions"
+          :indent="18"
+          @update:value="handleMenuUpdate"
+        />
       </div>
     </n-popover>
     <div v-else class="nav-end">
-      <n-button size="small" quaternary class="nav-picker"> 语言 </n-button>
-      <n-button size="small" quaternary class="nav-picker"> 主题 </n-button>
+      <n-popselect
+        v-model:value="store.locale"
+        :options="languageOptions"
+        trigger="click"
+        @update:value="store.setLocale"
+      >
+        <n-button size="small" quaternary class="nav-picker">
+          {{ _('locale.lang') }}
+        </n-button>
+      </n-popselect>
+
       <n-button
+        size="small"
+        quaternary
+        class="nav-picker"
+        @click="store.switchTheme"
+      >
+        {{ store.theme === 'light' ? _('theme.dark') : _('theme.light') }}
+      </n-button>
+      <!-- <n-button
         size="small"
         tag="a"
         quaternary
@@ -64,14 +86,8 @@
         target="_blank"
       >
         GitHub
-      </n-button>
-      <n-text class="nav-picker padded"> version </n-text>
-      <n-button v-if="dev" size="small" quaternary class="nav-picker">
-        displayMode
-      </n-button>
-      <n-button v-if="dev" size="small" quaternary class="nav-picker">
-        configProviderName
-      </n-button>
+      </n-button> -->
+      <!-- <n-text class="nav-picker padded"> version </n-text> -->
     </div>
   </n-layout-header>
 </template>
@@ -79,27 +95,22 @@
 <script lang="ts" setup>
 import { MenuOutline } from '@vicons/ionicons5';
 import { isMobile } from './consts';
-const dev = 0;
-const menuOptions = [
+import { useStore } from './stores';
+import { languageOptions, languageOptionsMap } from './consts/options';
+import router from './router';
+import i18n from './i18n';
+
+const _ = i18n.global.t;
+const store = useStore();
+
+const headerMenuOptions = [
   {
-    label: '学五',
-    key: '学五',
-    children: [
-      {
-        label: '难吃',
-        key: '难吃',
-      },
-    ],
+    label: _('home'),
+    key: 'home',
   },
   {
-    label: '学一',
-    key: '学一',
-    children: [
-      {
-        label: '也难吃',
-        key: '也难吃',
-      },
-    ],
+    label: _('docs.docs'),
+    key: 'docs-default',
   },
   {
     label: '燕南',
@@ -112,6 +123,10 @@ const menuOptions = [
     ],
   },
 ];
+const handleMenuUpdate = (key: string) => {
+  console.log('handleMenuUpdate', key);
+  router.push({ name: key });
+};
 </script>
 
 <style scoped>
