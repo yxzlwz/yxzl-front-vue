@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps } from 'vue';
+import { RouterLink } from 'vue-router';
 
 const props = defineProps({
   title: {
@@ -10,12 +10,16 @@ const props = defineProps({
     type: String,
     default: 'Description',
   },
+  to: {
+    type: Object,
+    default: () => ({ name: 'home' }),
+  },
 });
 </script>
 
 <template>
   <div class="card">
-    <a class="card1" href="#">
+    <RouterLink class="card1" :to="props.to">
       <p>{{ props.title }}</p>
       <p class="small">
         {{ props.description }}
@@ -23,7 +27,7 @@ const props = defineProps({
       <div class="go-corner" href="#">
         <div class="go-arrow">→</div>
       </div>
-    </a>
+    </RouterLink>
   </div>
 </template>
 

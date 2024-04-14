@@ -27,6 +27,5 @@ export default (routes: Array<RouteRecordRaw>) => {
       menu.push(option);
     }
   }
-  console.log(menu);
   return menu;
 };

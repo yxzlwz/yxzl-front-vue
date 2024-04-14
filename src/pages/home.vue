@@ -28,7 +28,11 @@ import Footer from '../Footer.vue';
         responsive="screen"
       >
         <n-gi>
-          <LinkCard title="🔗短链接" description="支持自定义后缀的短链接服务" />
+          <LinkCard
+            title="🔗短链接"
+            description="支持自定义后缀的短链接服务"
+            :to="{ name: 'docs-default' }"
+          />
         </n-gi>
         <n-gi>
           <LinkCard title="短链接" description="/surl" />

@@ -42,7 +42,6 @@ export const routes = [
     children: docsRoutes,
     meta: {
       showSider: true,
-      a: 1,
     },
   },
 ];

@@ -93,15 +93,18 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import { MenuOutline } from '@vicons/ionicons5';
 import { isMobile } from './consts';
 import { useStore } from './stores';
-import { languageOptions, languageOptionsMap } from './consts/options';
+import { languageOptions } from './consts/options';
 import router from './router';
 import i18n from './i18n';
 
 const _ = i18n.global.t;
 const store = useStore();
+
+const mobilePopoverRef = ref();
 
 const headerMenuOptions = [
   {
@@ -124,8 +127,8 @@ const headerMenuOptions = [
   },
 ];
 const handleMenuUpdate = (key: string) => {
-  console.log('handleMenuUpdate', key);
   router.push({ name: key });
+  if (mobilePopoverRef.value) mobilePopoverRef.value.setShow(false);
 };
 </script>
 
