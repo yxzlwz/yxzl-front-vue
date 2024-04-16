@@ -116,14 +116,14 @@ const headerMenuOptions = [
     key: 'docs-default',
   },
   {
-    label: '燕南',
-    key: '燕南',
-    children: [
-      {
-        label: '依然难吃',
-        key: '依然难吃',
-      },
-    ],
+    label: _('user.center'),
+    key: 'user-center',
+    // children: [
+    //   {
+    //     label: '依然难吃',
+    //     key: '依然难吃',
+    //   },
+    // ],
   },
 ];
 const handleMenuUpdate = (key: string) => {

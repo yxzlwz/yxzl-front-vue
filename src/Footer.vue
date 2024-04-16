@@ -1,10 +1,11 @@
+<script lang="ts" setup>
+import { _ } from './i18n';
+import router from './router';
+</script>
+
 <template>
   <n-layout-footer bordered class="footer footer--centered">
     <div class="footer-links">
-      <div class="footer-links-col">
-        <n-text depth="1" class="col-header"> resources </n-text>
-        <n-button text tag="a" download> designResources </n-button>
-      </div>
       <div class="footer-links-col">
         <n-text depth="1" class="col-header"> help </n-text>
         <n-button
@@ -17,32 +18,56 @@
         </n-button>
       </div>
       <div class="footer-links-col">
-        <n-text depth="1" class="col-header"> community </n-text>
-        <n-button text tag="a" target="_blank"> GitHub </n-button>
+        <n-text depth="1" class="col-header"> {{ _('site.name') }} </n-text>
         <n-button
           text
           tag="a"
-          href="https://discord.gg/Pqv7Mev5Dd"
+          target="_blank"
+          href="https://blog.yixiangzhilv.com/"
+        >
+          异想之旅のBlog
+        </n-button>
+        <n-button
+          text
+          tag="a"
+          href="https://github.com/yxzlwz/"
           target="_blank"
         >
-          Discord
+          GitHub
+        </n-button>
+        <n-button
+          text
+          tag="a"
+          href="https://twitter.com/yxzlwz"
+          target="_blank"
+        >
+          Twitter
         </n-button>
       </div>
       <div class="footer-links-col footer-links-col--last">
-        <n-text depth="1" class="col-header"> contact </n-text>
-        <n-button text tag="a" target="_blank" href="https://www.tusimple.com/">
-          tusimple
+        <n-text depth="1" class="col-header">
+          {{ _('footer.contact') }}
+        </n-text>
+        <n-button text tag="a" href="mailto:mail@yixiangzhilv.com">
+          mail@yixiangzhilv.com
+        </n-button>
+        <n-button
+          text
+          @click="router.push({ name: 'docs', params: { name: 'wechat' } })"
+        >
+          服务微信
         </n-button>
       </div>
     </div>
     <n-divider class="footer-divider" />
     <div style="text-align: center; padding: 20px">
-      <n-text depth="3"> Naive UI · Made by TuSimple </n-text>
+      <n-text depth="3">
+        © 2018-{{ new Date().getFullYear() }} {{ _('site.name') }} ·
+        鲁ICP备2020034769号-3
+      </n-text>
     </div>
   </n-layout-footer>
 </template>
-
-<script lang="ts" setup></script>
 
 <style scoped>
 .footer {

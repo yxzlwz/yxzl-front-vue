@@ -3,6 +3,15 @@ export default {
   login: '登录',
   logout: '登出',
   home: '首页',
+  footer: {
+    contact: '联系我们',
+  },
+  feedback: {
+    loading: '加载中...',
+  },
+  user: {
+    center: '用户中心',
+  },
   docs: {
     docs: '文档',
     introduction: '简介',

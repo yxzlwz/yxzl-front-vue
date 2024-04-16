@@ -39,7 +39,7 @@ import { RouterView, useRoute } from 'vue-router';
 import { isMobile } from './consts';
 import routes2menu from './utils/routes2menu';
 import router from './router';
-import { docsMenu } from './consts/docs';
+import { docsMenu } from './consts/menu';
 import Footer from './Footer.vue';
 
 const route = useRoute();

@@ -1,42 +1,40 @@
 <template>
-  <n-card :bordered="false" class="md-editor-card">
-    <MdEditor
-      :editorId="`md-editor-${id}`"
-      class="md-editor-v3"
-      v-model="_content"
-      katexJs="https://cdn.staticfile.org/KaTeX/0.15.1/katex.min.js"
-      katexCss="https://cdn.staticfile.org/KaTeX/0.15.1/katex.min.css"
-      highlightJs="https://cdn.staticfile.org/highlight.js/11.2.0/highlight.min.js"
-      highlightCss="https://cdn.staticfile.org/highlight.js/10.0.0/styles/atom-one-dark.min.css"
-      noMermaid
-      prettierCDN="https://cdn.staticfile.org/prettier/2.0.3/standalone.min.js"
-      prettierMDCDN="https://cdn.staticfile.org/prettier/2.0.3/parser-markdown.min.js"
-      noCropper
-      :toolbars="[
-        'revoke',
-        'next',
-        '-',
-        'bold',
-        'underline',
-        'strikeThrough',
-        'quote',
-        '-',
-        'link',
-        'image',
-        'katex',
-        'codeRow',
-        'code',
-        '-',
-        'preview',
-      ]"
-      :preview="true"
-      :previewOnly="previewOnly"
-      :historyLength="20"
-      showCodeRowNumber
-      previewTheme="vuepress"
-      :theme="store.theme"
-    />
-  </n-card>
+  <MdEditor
+    :editorId="`md-editor-${id}`"
+    class="md-editor-v3"
+    v-model="_content"
+    katexJs="https://cdn.staticfile.org/KaTeX/0.15.1/katex.min.js"
+    katexCss="https://cdn.staticfile.org/KaTeX/0.15.1/katex.min.css"
+    highlightJs="https://cdn.staticfile.org/highlight.js/11.2.0/highlight.min.js"
+    highlightCss="https://cdn.staticfile.org/highlight.js/10.0.0/styles/atom-one-dark.min.css"
+    noMermaid
+    prettierCDN="https://cdn.staticfile.org/prettier/2.0.3/standalone.min.js"
+    prettierMDCDN="https://cdn.staticfile.org/prettier/2.0.3/parser-markdown.min.js"
+    noCropper
+    :toolbars="[
+      'revoke',
+      'next',
+      '-',
+      'bold',
+      'underline',
+      'strikeThrough',
+      'quote',
+      '-',
+      'link',
+      'image',
+      'katex',
+      'codeRow',
+      'code',
+      '-',
+      'preview',
+    ]"
+    :preview="true"
+    :previewOnly="previewOnly"
+    :historyLength="20"
+    showCodeRowNumber
+    previewTheme="vuepress"
+    :theme="store.theme"
+  />
 </template>
 
 <script setup lang="ts">
@@ -68,26 +66,10 @@ watch(toRef(props, 'content'), val => (_content.value = val));
 
 <style lang="scss" scoped>
 .md-editor-v3 {
-  background-color: var(--n-color);
-  color: var(--n-text-color);
+  background-color: var(--n-body-color);
   border-radius: var(--n-border-radius);
   transition: color 0.3s var(--n-bezier), background-color 0.3s var(--n-bezier),
     box-shadow 0.3s var(--n-bezier), border-color 0.3s var(--n-bezier);
-}
-
-:deep(.md-editor-v3 .md-preview) {
-  div,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  a,
-  strong {
-    color: var(--n-text-color) !important;
-  }
 }
 
 .md-editor-v3 :deep(img) {
