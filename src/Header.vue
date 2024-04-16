@@ -28,14 +28,6 @@
           @update:value="handleMenuUpdate"
         />
       </div>
-      <!-- <n-auto-complete
-        :style="
-          !isMobile
-            ? 'width: 216px; margin-left: 24px; margin-right: 12px; flex-shrink: 0;'
-            : undefined
-        "
-        placeholder="searchPlaceholder"
-      /> -->
     </div>
     <n-popover
       v-if="isMobile"
@@ -52,7 +44,7 @@
       </template>
       <div style="overflow: auto; max-height: 79vh">
         <n-menu
-          :options="headerMenuOptions"
+          :options="mobileMenuOptions"
           :indent="18"
           @update:value="handleMenuUpdate"
         />
@@ -93,16 +85,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { MenuOutline } from '@vicons/ionicons5';
 import { isMobile } from './consts';
-import { useStore } from './stores';
+import { useStore, useMenuStore } from './stores';
 import { languageOptions } from './consts/options';
-import router from './router';
+import handleMenuChange from './utils/handleMenuChange';
+import { NPopselect, NButton } from 'naive-ui';
 import i18n from './i18n';
 
 const _ = i18n.global.t;
-const store = useStore();
+const store = useStore(),
+  menuStore = useMenuStore();
 
 const mobilePopoverRef = ref();
 
@@ -126,9 +120,50 @@ const headerMenuOptions = [
     // ],
   },
 ];
-const handleMenuUpdate = (key: string) => {
-  router.push({ name: key });
-  if (mobilePopoverRef.value) mobilePopoverRef.value.setShow(false);
+const mobileMenuOptions = ref(headerMenuOptions),
+  updateMobileMenuOptions = () => {
+    if (menuStore.sidebar_menu.length) {
+      mobileMenuOptions.value = headerMenuOptions
+        .concat([
+          {
+            type: 'divider',
+          },
+        ])
+        .concat(menuStore.sidebar_menu);
+    } else {
+      mobileMenuOptions.value = headerMenuOptions;
+    }
+    mobileMenuOptions.value = mobileMenuOptions.value.concat([
+      {
+        type: 'divider',
+      },
+      {
+        label: () =>
+          store.theme === 'light' ? _('theme.dark') : _('theme.light'),
+        key: 'changeTheme',
+        action: 'changeTheme',
+      },
+      {
+        label: _('locale.lang'),
+        key: 'changeLanguage',
+        children: languageOptions.map(item => {
+          return {
+            label: item.label,
+            key: item.value,
+            action: 'changeLanguage',
+          };
+        }),
+      },
+    ]);
+  };
+watch(() => menuStore.sidebar_menu, updateMobileMenuOptions);
+
+const handleMenuUpdate = (key: string, item: any) => {
+  if (mobilePopoverRef.value) {
+    handleMenuChange(key, item, mobilePopoverRef.value);
+  } else {
+    handleMenuChange(key, item);
+  }
 };
 </script>
 

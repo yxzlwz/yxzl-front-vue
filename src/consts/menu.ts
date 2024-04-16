@@ -14,6 +14,7 @@ for (let i = 0; i < docsList.length; i++) {
     _docsMenu.push({
       label: _(`docs.${item}`),
       key: item,
+      action: 'docs',
     });
     continue;
   }
@@ -29,6 +30,7 @@ for (let i = 0; i < docsList.length; i++) {
         {
           label: _(`docs.${cate}.${name}`),
           key: item,
+          action: 'docs',
         },
       ],
     });
@@ -37,6 +39,7 @@ for (let i = 0; i < docsList.length; i++) {
     _docsMenu[_docsMenu.length - 1].children.push({
       label: _(`docs.${cate}.${name}`),
       key: item,
+      action: 'docs',
     });
   }
 }

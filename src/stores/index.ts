@@ -40,4 +40,16 @@ export const useStore = defineStore('__default__', {
   persist: true,
 });
 
+export const useMenuStore = defineStore('menu', {
+  state: () => ({
+    sidebar_menu: [],
+  }),
+  actions: {
+    setSidebarMenu(menu: any) {
+      this.sidebar_menu = menu;
+    },
+  },
+  persist: false,
+});
+
 export default useStore;

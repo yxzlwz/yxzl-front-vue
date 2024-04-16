@@ -16,7 +16,10 @@
       bordered
       show-trigger="arrow-circle"
     >
-      <n-menu :options="menuOptions" @update:value="handleMenuChange" />
+      <n-menu
+        :options="menuStore.sidebar_menu"
+        @update:value="handleMenuChange"
+      />
     </n-layout-sider>
     <n-layout
       ref="layoutInstRef"
@@ -38,22 +41,23 @@ import { ref, watch } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import { isMobile } from './consts';
 import routes2menu from './utils/routes2menu';
-import router from './router';
+import handleMenuChange from './utils/handleMenuChange';
 import { docsMenu } from './consts/menu';
 import Footer from './Footer.vue';
+import { useMenuStore } from './stores';
 
-const route = useRoute();
+const route = useRoute(),
+  menuStore = useMenuStore();
 
-const _showSider = ref(false),
-  showSider = ref(false),
-  menuOptions = ref(Array());
+let _showSider: any = false;
+const showSider = ref(false);
 
 const loadSider = () => {
-  _showSider.value = (!isMobile.value && route.meta.showSider) || false;
-  menuOptions.value = Array();
+  _showSider = (!isMobile.value && route.meta.showSider) || false;
+  menuStore.setSidebarMenu(Array());
 
   if (route.name === 'docs') {
-    menuOptions.value = docsMenu;
+    menuStore.setSidebarMenu(docsMenu);
   }
 
   // if (_showSider) {
@@ -62,14 +66,9 @@ const loadSider = () => {
   //   }
   // }
 
-  showSider.value = (_showSider && menuOptions.value.length && true) || false;
+  showSider.value =
+    (_showSider && menuStore.sidebar_menu.length && true) || false;
 };
 loadSider();
 watch(() => route.name, loadSider);
-
-const handleMenuChange = (key: string) => {
-  if (route.name === 'docs') {
-    router.push({ name: 'docs', params: { name: key } });
-  }
-};
 </script>

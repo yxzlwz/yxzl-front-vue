@@ -7,17 +7,6 @@ import router from './router';
   <n-layout-footer bordered class="footer footer--centered">
     <div class="footer-links">
       <div class="footer-links-col">
-        <n-text depth="1" class="col-header"> help </n-text>
-        <n-button
-          text
-          tag="a"
-          target="_blank"
-          href="https://naive-ui.github.io/issue-helper/"
-        >
-          reportBug
-        </n-button>
-      </div>
-      <div class="footer-links-col">
         <n-text depth="1" class="col-header"> {{ _('site.name') }} </n-text>
         <n-button
           text

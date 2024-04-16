@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { isMobile } from '../consts';
 import LinkCard from '../components/LinkCard.vue';
-import Footer from '../Footer.vue';
 </script>
 
 <template>
@@ -9,7 +7,7 @@ import Footer from '../Footer.vue';
     <h1>欢迎来到异想之旅的</h1>
     <n-grid
       n-grid
-      cols="2 l:4 xl:4 xxl:5"
+      cols="1 m:2 l:4 xl:4 xxl:5"
       x-gap="10"
       y-gap="10"
       style="margin: 0 2em; width: auto"
