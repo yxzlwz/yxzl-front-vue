@@ -51,6 +51,11 @@ console.log(route);
 const _showSider = !isMobile.value && route.meta.showSider;
 const menuOptions = ref(null);
 
+// 判断是否是文档
+if (route.name === 'docs'){
+  
+}
+
 if (_showSider) {
   if (route.name?.indexOf('docs') === 0) {
     menuOptions.value = routes2menu(docsRoutes);

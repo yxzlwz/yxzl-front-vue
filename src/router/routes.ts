@@ -36,12 +36,22 @@ export const routes = [
     component: () => import('../pages/home.vue'),
   },
   {
-    path: '/docs/',
+    path: '/docs/:name',
     name: 'docs',
     component: () => import('../Layout.vue'),
     children: docsRoutes,
     meta: {
       showSider: true,
+    },
+  },
+  {
+    path: '/docs/',
+    name: 'docs-default',
+    redirect: {
+      name: 'docs',
+      params: {
+        name: 'introduction',
+      },
     },
   },
 ];

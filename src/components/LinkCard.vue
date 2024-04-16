@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { RouterLink } from 'vue-router';
+import { useThemeVars } from 'naive-ui';
+
+const themeVars = useThemeVars();
 
 const props = defineProps({
   title: {
@@ -18,7 +21,15 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="card">
+  <div
+    class="card"
+    :style="{
+      '--color-normal': themeVars.textColor2,
+      '--color-hover': themeVars.cardColor,
+      '--background-hover': themeVars.primaryColorHover,
+      '--background-normal': themeVars.actionColor,
+    }"
+  >
     <RouterLink class="card1" :to="props.to">
       <p>{{ props.title }}</p>
       <p class="small">
@@ -36,7 +47,7 @@ const props = defineProps({
   font-size: 20px;
   font-weight: 400;
   line-height: 20px;
-  color: #666;
+  color: var(--color-normal);
 }
 
 .card p.small {
@@ -54,7 +65,7 @@ const props = defineProps({
   overflow: hidden;
   top: 0;
   right: 0;
-  background-color: #00838d;
+  background-color: var(--background-hover);
   border-radius: 0 4px 0 32px;
 }
 
@@ -69,7 +80,7 @@ const props = defineProps({
   display: block;
   position: relative;
   max-width: 262px;
-  background-color: #f2f8f9;
+  background-color: var(--background-normal);
   border-radius: 4px;
   padding: 20px 24px;
   margin: 12px;
@@ -84,7 +95,7 @@ const props = defineProps({
   z-index: -1;
   top: -16px;
   right: -16px;
-  background: #00838d;
+  background: var(--background-hover);
   height: 36px;
   width: 36px;
   border-radius: 32px;
@@ -99,135 +110,7 @@ const props = defineProps({
 
 .card1:hover p {
   transition: all 0.3s ease-out;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.card1:hover h3 {
-  transition: all 0.3s ease-out;
-  color: #fff;
-}
-
-.card2 {
-  display: block;
-  top: 0px;
-  position: relative;
-  max-width: 262px;
-  background-color: #f2f8f9;
-  border-radius: 4px;
-  padding: 32px 24px;
-  margin: 12px;
-  text-decoration: none;
-  z-index: 0;
-  overflow: hidden;
-  border: 1px solid #f2f8f9;
-}
-
-.card2:hover {
-  transition: all 0.2s ease-out;
-  box-shadow: 0px 4px 8px rgba(38, 38, 38, 0.2);
-  top: -4px;
-  border: 1px solid #ccc;
-  background-color: white;
-}
-
-.card2:before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  top: -16px;
-  right: -16px;
-  background: #00838d;
-  height: 32px;
-  width: 32px;
-  border-radius: 32px;
-  transform: scale(2);
-  transform-origin: 50% 50%;
-  transition: transform 0.15s ease-out;
-}
-
-.card2:hover:before {
-  transform: scale(2.15);
-}
-
-.card3 {
-  display: block;
-  top: 0px;
-  position: relative;
-  max-width: 262px;
-  background-color: #f2f8f9;
-  border-radius: 4px;
-  padding: 32px 24px;
-  margin: 12px;
-  text-decoration: none;
-  overflow: hidden;
-  border: 1px solid #f2f8f9;
-}
-
-.card3 .go-corner {
-  opacity: 0.7;
-}
-
-.card3:hover {
-  border: 1px solid #00838d;
-  box-shadow: 0px 0px 999px 999px rgba(255, 255, 255, 0.5);
-  z-index: 500;
-}
-
-.card3:hover p {
-  color: #00838d;
-}
-
-.card3:hover .go-corner {
-  transition: opactiy 0.3s linear;
-  opacity: 1;
-}
-
-.card4 {
-  display: block;
-  top: 0px;
-  position: relative;
-  max-width: 262px;
-  background-color: #fff;
-  border-radius: 4px;
-  padding: 32px 24px;
-  margin: 12px;
-  text-decoration: none;
-  overflow: hidden;
-  border: 1px solid #ccc;
-}
-
-.card4 .go-corner {
-  background-color: #00838d;
-  height: 100%;
-  width: 16px;
-  padding-right: 9px;
-  border-radius: 0;
-  transform: skew(6deg);
-  margin-right: -36px;
-  align-items: start;
-  background-image: linear-gradient(-45deg, #8f479a 1%, #dc2a74 100%);
-}
-
-.card4 .go-arrow {
-  transform: skew(-6deg);
-  margin-left: -2px;
-  margin-top: 9px;
-  opacity: 0;
-}
-
-.card4:hover {
-  border: 1px solid #cd3d73;
-}
-
-.card4 h3 {
-  margin-top: 8px;
-}
-
-.card4:hover .go-corner {
-  margin-right: -12px;
-}
-
-.card4:hover .go-arrow {
-  opacity: 1;
+  /* color: rgba(255, 255, 255, 0.8); */
+  color: var(--color-hover);
 }
 </style>

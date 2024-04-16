@@ -20,7 +20,7 @@ import Footer from '../Footer.vue';
       <h1>欢迎来到异想之旅的</h1>
       <n-grid
         n-grid
-        cols="1 m:2 l:4 xl:5 xxl:6"
+        cols="2 l:4 xl:4 xxl:5"
         x-gap="10"
         y-gap="10"
         style="margin: 0 2em; width: auto"
