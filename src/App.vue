@@ -2,6 +2,7 @@
 import { zhCN, dateZhCN, darkTheme } from 'naive-ui';
 import { isMobile } from './consts';
 import Header from './Header.vue';
+import Layout from './Layout.vue';
 import NaiveApi from './components/NaiveApi.vue';
 import { RouterView } from 'vue-router';
 import { useStore } from './stores';
@@ -27,8 +28,8 @@ i18n.global.locale.value = store.locale;
             class="root-layout"
           >
             <Header />
-            <!-- <Layout /> -->
-            <RouterView />
+            <Layout />
+            <!-- <RouterView /> -->
           </n-layout>
         </n-dialog-provider>
       </n-message-provider>

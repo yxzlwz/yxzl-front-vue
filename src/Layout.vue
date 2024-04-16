@@ -16,10 +16,7 @@
       bordered
       show-trigger="arrow-circle"
     >
-      <n-menu
-        :options="menuOptions"
-        @update:value="(key:string) => router.push({ name: key })"
-      />
+      <n-menu :options="menuOptions" @update:value="handleMenuChange" />
     </n-layout-sider>
     <n-layout
       ref="layoutInstRef"
@@ -37,30 +34,42 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import { isMobile } from './consts';
 import routes2menu from './utils/routes2menu';
 import router from './router';
-import { docsRoutes } from './router/routes';
+import { docsMenu } from './consts/docs';
 import Footer from './Footer.vue';
 
 const route = useRoute();
-console.log(route);
 
-const _showSider = !isMobile.value && route.meta.showSider;
-const menuOptions = ref(null);
+const _showSider = ref(false),
+  showSider = ref(false),
+  menuOptions = ref(Array());
 
-// 判断是否是文档
-if (route.name === 'docs'){
-  
-}
+const loadSider = () => {
+  _showSider.value = (!isMobile.value && route.meta.showSider) || false;
+  menuOptions.value = Array();
 
-if (_showSider) {
-  if (route.name?.indexOf('docs') === 0) {
-    menuOptions.value = routes2menu(docsRoutes);
+  if (route.name === 'docs') {
+    menuOptions.value = docsMenu;
   }
-}
 
-const showSider = _showSider && menuOptions.value && true;
+  // if (_showSider) {
+  //   if (route.name?.indexOf('docs') === 0) {
+  //     menuOptions.value = routes2menu(docsRoutes);
+  //   }
+  // }
+
+  showSider.value = (_showSider && menuOptions.value.length && true) || false;
+};
+loadSider();
+watch(() => route.name, loadSider);
+
+const handleMenuChange = (key: string) => {
+  if (route.name === 'docs') {
+    router.push({ name: 'docs', params: { name: key } });
+  }
+};
 </script>

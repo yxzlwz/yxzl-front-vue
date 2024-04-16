@@ -5,9 +5,11 @@ export default {
   home: '首页',
   docs: {
     docs: '文档',
-    surl: '短链接',
-    'docs-introduction': '简介',
-    'docs-about': '关于',
+    introduction: '简介',
+    surl: {
+      surl: '短链接',
+      api: 'API',
+    },
   },
   theme: {
     theme: '主题',

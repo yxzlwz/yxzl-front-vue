@@ -1,34 +1,3 @@
-export const docsRoutes = [
-  {
-    path: 'introduction/',
-    name: 'docs-introduction',
-    component: () => import('../pages/docs/template.vue'),
-  },
-  {
-    path: 'about/',
-    name: 'docs-about',
-    component: () => import('../pages/docs/template.vue'),
-  },
-  {
-    path: 'surl/api/',
-    name: 'docs-surl-api',
-    component: () => import('../pages/docs/template.vue'),
-    meta: {
-      cate: 'surl',
-    },
-  },
-  {
-    path: '',
-    name: 'docs-default',
-    redirect: {
-      name: 'docs-introduction',
-    },
-    meta: {
-      showInMenu: false,
-    },
-  },
-];
-
 export const routes = [
   {
     path: '/',
@@ -36,10 +5,9 @@ export const routes = [
     component: () => import('../pages/home.vue'),
   },
   {
-    path: '/docs/:name',
+    path: '/docs/:name/',
     name: 'docs',
-    component: () => import('../Layout.vue'),
-    children: docsRoutes,
+    component: () => import('../pages/docs.vue'),
     meta: {
       showSider: true,
     },
