@@ -3,27 +3,27 @@ import LinkCard from '../components/LinkCard.vue';
 </script>
 
 <template>
-  <n-layout style="padding: 2vh 2vw">
-    <h1>欢迎来到异想之旅的</h1>
-    <n-grid
-      n-grid
-      cols="1 m:2 l:4 xl:4 xxl:5"
-      x-gap="10"
-      y-gap="10"
-      style="margin: 0 2em; width: auto"
-      item-responsive
-      responsive="screen"
-    >
-      <n-gi>
-        <LinkCard
-          title="🔗短链接"
-          description="支持自定义后缀的短链接服务"
-          :to="{ name: 'docs-default' }"
-        />
-      </n-gi>
-      <n-gi>
-        <LinkCard title="短链接" description="/surl" />
-      </n-gi>
-    </n-grid>
-  </n-layout>
+  <h1>异想之旅の工具箱</h1>
+  <n-space style="justify-content: space-evenly">
+    <LinkCard
+      title="🔗短链接"
+      description="支持自定义后缀的短链接服务"
+      :to="{ name: 'surl-create' }"
+    />
+    <LinkCard
+      title="💬亿言"
+      description="异想之旅精选句子库，支持API"
+      :to="{ name: 'yiyan-show' }"
+    />
+  </n-space>
 </template>
+
+<style scoped lang="scss">
+.tool-card {
+  display: flex;
+  justify-content: center;
+  // div.card {
+  //   width: 100%;
+  // }
+}
+</style>

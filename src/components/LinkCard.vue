@@ -44,6 +44,7 @@ const props = defineProps({
 
 <style scoped>
 .card p {
+  width: 400px;
   font-size: 20px;
   font-weight: 400;
   line-height: 20px;

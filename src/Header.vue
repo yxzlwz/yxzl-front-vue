@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { MenuOutline } from '@vicons/ionicons5';
 import { isMobile } from './consts';
 import { useStore, useMenuStore } from './stores';
@@ -100,7 +100,7 @@ const store = useStore(),
 
 const mobilePopoverRef = ref();
 
-const headerMenuOptions = [
+const headerMenuOptions = computed(() => [
   {
     label: _('home'),
     key: 'home',
@@ -110,8 +110,14 @@ const headerMenuOptions = [
     key: 'docs-default',
   },
   {
+    label: _('user.login'),
+    key: 'user-login',
+    show: !store.loggedIn,
+  },
+  {
     label: _('user.center'),
     key: 'user-center',
+    show: store.loggedIn,
     // children: [
     //   {
     //     label: '依然难吃',
@@ -119,11 +125,11 @@ const headerMenuOptions = [
     //   },
     // ],
   },
-];
-const mobileMenuOptions = ref(headerMenuOptions),
+]);
+const mobileMenuOptions = ref(headerMenuOptions.value),
   updateMobileMenuOptions = () => {
     if (menuStore.sidebar_menu.length) {
-      mobileMenuOptions.value = headerMenuOptions
+      mobileMenuOptions.value = headerMenuOptions.value
         .concat([
           {
             type: 'divider',
@@ -131,7 +137,7 @@ const mobileMenuOptions = ref(headerMenuOptions),
         ])
         .concat(menuStore.sidebar_menu);
     } else {
-      mobileMenuOptions.value = headerMenuOptions;
+      mobileMenuOptions.value = headerMenuOptions.value;
     }
     mobileMenuOptions.value = mobileMenuOptions.value.concat([
       {

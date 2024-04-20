@@ -21,10 +21,10 @@ Axios.defaults.transformResponse = [
 ];
 
 export const errorHandler = (err: any) => {
-  let _message = '未知错误';
-  if (err.response?.data?.detail) _message = err.response.data.detail;
-  else if (err.request) _message = '网络异常，请检查网络连接';
-  naiveui.message.error(_message);
+  let message = '未知错误';
+  if (err.response?.data?.detail) message = err.response.data.detail;
+  else if (!err.response?.status) message = '网络异常，请检查网络连接';
+  naiveui.message.error(message);
 
   if (err.response?.data?.action)
     router.push({ name: err.response.data.action });

@@ -4,12 +4,24 @@ import { isMobile } from './consts';
 import Header from './Header.vue';
 import Layout from './Layout.vue';
 import NaiveApi from './components/NaiveApi.vue';
-import { RouterView } from 'vue-router';
 import { useStore } from './stores';
 import i18n from './i18n';
+import Axios from './plugins/axios';
 
 const store = useStore();
 i18n.global.locale.value = store.locale;
+
+if (store.loggedIn) {
+  Axios.get('/user/info/')
+    .then(res => {
+      store.user = res.data.user;
+    })
+    .catch(err => {
+      if (err.response.status === 403) {
+        store.logout();
+      }
+    });
+}
 </script>
 
 <template>

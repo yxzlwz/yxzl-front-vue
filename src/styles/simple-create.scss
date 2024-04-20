@@ -1,0 +1,18 @@
+.simple-create {
+  margin: 5vh 10vw;
+  width: auto;
+  .n-input {
+    margin-bottom: 30px;
+  }
+  .n-space {
+    margin-bottom: 30px;
+  }
+  .setting {
+    .n-input {
+      margin-bottom: 0;
+    }
+  }
+}
+.simple-create-mobile {
+  margin: 2vh 2vw;
+}

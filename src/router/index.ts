@@ -14,8 +14,8 @@ export const router = createRouter({
 router.beforeEach((to, _from, next) => {
   naiveui.loadingBar.start();
   const store = useStore();
-  if (to.meta.requireLogin && !store.loggedIn) {
-    next('/login/');
+  if (to.meta.requiredLogin && !store.loggedIn) {
+    next({ name: 'user-login', query: { next: to.fullPath } });
   } else {
     next();
   }

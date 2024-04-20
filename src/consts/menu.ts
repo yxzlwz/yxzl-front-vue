@@ -45,3 +45,38 @@ for (let i = 0; i < docsList.length; i++) {
 }
 
 export const docsMenu = _docsMenu;
+
+// Surl
+
+export const surlMenu = [
+  {
+    label: _('menu.surl.create'),
+    key: 'surl-create',
+    action: 'route',
+  },
+  {
+    label: _('menu.surl.list'),
+    key: 'surl-list',
+    action: 'route',
+  },
+];
+
+// Yiyan
+
+export const yiyanMenu = [
+  {
+    label: _('menu.yiyan.show'),
+    key: 'yiyan-show',
+    action: 'route',
+  },
+  {
+    label: _('menu.yiyan.create'),
+    key: 'yiyan-create',
+    action: 'route',
+  },
+  {
+    label: _('menu.yiyan.list'),
+    key: 'yiyan-list',
+    action: 'route',
+  },
+];

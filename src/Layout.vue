@@ -30,7 +30,7 @@
       :position="isMobile || showSider ? 'static' : 'absolute'"
       content-style="min-height: calc(100vh - var(--header-height)); display: flex; flex-direction: column;"
     >
-      <RouterView />
+      <n-layout style="margin: 2vh 2vw"> <RouterView /> </n-layout>
       <Footer />
     </n-layout>
   </n-layout>
@@ -40,34 +40,33 @@
 import { ref, watch } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import { isMobile } from './consts';
-import routes2menu from './utils/routes2menu';
 import handleMenuChange from './utils/handleMenuChange';
-import { docsMenu } from './consts/menu';
+import { docsMenu, surlMenu, yiyanMenu } from './consts/menu';
 import Footer from './Footer.vue';
 import { useMenuStore } from './stores';
 
 const route = useRoute(),
   menuStore = useMenuStore();
 
-let _showSider: any = false;
 const showSider = ref(false);
 
 const loadSider = () => {
-  _showSider = (!isMobile.value && route.meta.showSider) || false;
   menuStore.setSidebarMenu(Array());
+  if (!route.meta.showSider) {
+    showSider.value = false;
+    return;
+  }
 
   if (route.name === 'docs') {
     menuStore.setSidebarMenu(docsMenu);
+  } else if (route.name.indexOf('surl') === 0) {
+    menuStore.setSidebarMenu(surlMenu);
+  } else if (route.name.indexOf('yiyan') === 0) {
+    menuStore.setSidebarMenu(yiyanMenu);
   }
 
-  // if (_showSider) {
-  //   if (route.name?.indexOf('docs') === 0) {
-  //     menuOptions.value = routes2menu(docsRoutes);
-  //   }
-  // }
-
   showSider.value =
-    (_showSider && menuStore.sidebar_menu.length && true) || false;
+    (!isMobile.value && menuStore.sidebar_menu.length && true) || false;
 };
 loadSider();
 watch(() => route.name, loadSider);
