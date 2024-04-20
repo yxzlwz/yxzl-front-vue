@@ -10,6 +10,8 @@ export default {
     loading: '加载中...',
   },
   user: {
+    login: '登录',
+    registerSuccess: '注册验证成功，请登录',
     center: '用户中心',
   },
   operation: {

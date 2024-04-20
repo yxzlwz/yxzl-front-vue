@@ -6,15 +6,22 @@ import { useStore } from '../../stores';
 // import { getReCaptcha } from '../../plugins/recaptcha';
 import router from '../../router';
 import { useReCaptcha } from 'vue-recaptcha-v3';
+import { _ } from '../../i18n';
 
 const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
 
 const message = useMessage(),
   store = useStore();
 
+if (router.currentRoute.value.query.message) {
+  message.success(
+    _(`user.${router.currentRoute.value.query.message as string}`)
+  );
+}
+
 const username = ref(''),
   password = ref(''),
-  passwordRepeat = ref('');
+  email = ref('');
 
 const login = async () => {
     if (!username.value || !password.value) {
@@ -40,27 +47,21 @@ const login = async () => {
       })
       .catch(errorHandler);
   },
-  register = () => {
-    if (!username.value || !password.value || !passwordRepeat.value) {
-      message.error('用户名或密码不能为空');
-      return;
-    } else if (password.value !== passwordRepeat.value) {
-      message.error('两次输入的密码不一致');
+  register = async () => {
+    if (!username.value || !password.value || !email.value) {
+      message.error('注册信息不能为空');
       return;
     }
-
+    await recaptchaLoaded();
+    const recaptcha = await executeRecaptcha('login');
+    console.log(recaptcha);
     Axios.post('/user/register/', {
       username: username.value,
       password: password.value,
+      email: email.value,
     })
       .then((res: any) => {
-        store.user = res.data.user;
-        message.success('注册成功');
-        if (router.currentRoute.value.query.next) {
-          router.push(router.currentRoute.value.query.next as string);
-        } else {
-          router.push({ name: 'user' });
-        }
+        message.success(res.data?.detail);
       })
       .catch(errorHandler);
   };
@@ -108,17 +109,9 @@ const login = async () => {
                 v-model:value="password"
               />
             </n-form-item-row>
-            <n-form-item-row label="重复密码">
-              <n-input
-                type="password"
-                show-password-on="mousedown"
-                v-model:value="passwordRepeat"
-              />
+            <n-form-item-row label="邮箱">
+              <n-input v-model:value="email" />
             </n-form-item-row>
-            注册视为您已阅读并同意
-            <RouterLink to="https://kdocs.cn/l/coDb4xTVncPH">
-              <n-button text> 用户协议 </n-button>
-            </RouterLink>
             <n-form-item-row>
               <n-button type="primary" block secondary strong @click="register">
                 注册
