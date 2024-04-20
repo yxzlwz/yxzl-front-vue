@@ -3,7 +3,7 @@ import naiveui from './naiveui';
 import router from '../router';
 
 export const Axios = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.PROD ? 'https://api.yixiangzhilv.com' : '/api',
 });
 
 Axios.defaults.transformResponse = [
