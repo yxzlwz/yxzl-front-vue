@@ -59,6 +59,7 @@ const login = async () => {
       username: username.value,
       password: password.value,
       email: email.value,
+      recaptcha: recaptcha,
     })
       .then((res: any) => {
         message.success(res.data?.detail);
