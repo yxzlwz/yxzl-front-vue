@@ -4,6 +4,7 @@ import router from '../router';
 
 export const Axios = axios.create({
   baseURL: import.meta.env.PROD ? 'https://api.yixiangzhilv.com' : '/api',
+  withCredentials: true,
 });
 
 Axios.defaults.transformResponse = [
