@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import { Axios, errorHandler } from '../../plugins/axios';
-import { useMessage } from 'naive-ui';
+import naiveui from '../../plugins/naiveui';
 import { ref } from 'vue';
 import { useStore } from '../../stores';
-// import { getReCaptcha } from '../../plugins/recaptcha';
 import router from '../../router';
 import { useReCaptcha } from 'vue-recaptcha-v3';
 import { _ } from '../../i18n';
 
+//@ts-ignore
 const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
 
-const message = useMessage(),
-  store = useStore();
+const store = useStore();
 
 if (router.currentRoute.value.query.message) {
-  message.success(
+  naiveui.message.success(
     _(`user.${router.currentRoute.value.query.message as string}`)
   );
 }
@@ -25,7 +24,7 @@ const username = ref(''),
 
 const login = async () => {
     if (!username.value || !password.value) {
-      message.error('用户名或密码不能为空');
+      naiveui.message.error('用户名或密码不能为空');
       return;
     }
     await recaptchaLoaded();
@@ -38,7 +37,7 @@ const login = async () => {
     })
       .then((res: any) => {
         store.user = res.data.user;
-        message.success('登录成功');
+        naiveui.message.success('登录成功');
         if (router.currentRoute.value.query.next) {
           router.push(router.currentRoute.value.query.next as string);
         } else {
@@ -49,7 +48,7 @@ const login = async () => {
   },
   register = async () => {
     if (!username.value || !password.value || !email.value) {
-      message.error('注册信息不能为空');
+      naiveui.message.error('注册信息不能为空');
       return;
     }
     await recaptchaLoaded();
@@ -62,7 +61,7 @@ const login = async () => {
       recaptcha: recaptcha,
     })
       .then((res: any) => {
-        message.success(res.data?.detail);
+        naiveui.message.success(res.data?.detail);
       })
       .catch(errorHandler);
   };

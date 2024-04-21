@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useStore } from '../../stores';
-import Axios from '../../plugins/axios';
+import { useStore, useVerifyStore } from '../../stores';
+import { Axios, errorHandler } from '../../plugins/axios';
 import { defaultAvatar } from '../../consts';
 import { LogOutOutline } from '@vicons/ionicons5';
 import { isMobile } from '../../consts';
 import router from '../../router';
 import naiveui from '../../plugins/naiveui';
 
-const store = useStore();
+const store = useStore(),
+  verifyStore = useVerifyStore();
 
 const user = ref<UserDetail>({
   id: 0,
@@ -38,8 +39,14 @@ const logout = () => {
   });
 };
 
-const editEmail = ref(false),
-  updateEmail = () => {};
+const new_email = ref(''),
+  updateEmail = () => {
+    Axios.put('/user/change_email/', { new_email: new_email.value })
+      .then(res => {
+        naiveui.message.success(res.data?.detail);
+      })
+      .catch(errorHandler);
+  };
 </script>
 
 <template>
@@ -87,18 +94,30 @@ const editEmail = ref(false),
           <n-form-item label="头像URL">
             <n-input v-model:value="user.avatar" />
           </n-form-item>
-          <n-form-item label="邮箱">
-            <n-input v-model:value="user.email" />
-          </n-form-item>
         </n-form>
         <n-button type="primary" @click="update"> 保存 </n-button>
+
         <n-divider />
+
         <n-h3>邮箱</n-h3>
-        <n-form :inline="!isMobile" v-if="editEmail">
-          <n-form-item label="邮箱">
-            <n-input v-model:value="user.email" disabled />
-          </n-form-item>
-        </n-form>
+        <n-space vertical>
+          <n-text style="font-size: 1.1em">
+            当前账号绑定邮箱：{{ user.email }}
+          </n-text>
+          <n-input-group>
+            <n-input
+              placeholder="新邮箱"
+              v-model:value="new_email"
+              style="margin-right: 20px; max-width: 200px"
+            />
+            <n-button
+              type="primary"
+              @click="verifyStore.checkVerified(updateEmail)"
+            >
+              修改
+            </n-button>
+          </n-input-group>
+        </n-space>
       </n-tab-pane>
       <n-tab-pane name="security" tab="安全设置"> Hey Jude </n-tab-pane>
       <n-tab-pane name="billing" tab="财务相关"> 七里香 </n-tab-pane>
