@@ -20,13 +20,15 @@ if (router.currentRoute.value.query.message) {
 
 const username = ref(''),
   password = ref(''),
-  email = ref('');
+  email = ref(''),
+  loading = ref(false);
 
 const login = async () => {
     if (!username.value || !password.value) {
       naiveui.message.error('用户名或密码不能为空');
       return;
     }
+    loading.value = true;
     await recaptchaLoaded();
     const recaptcha = await executeRecaptcha('login');
     console.log(recaptcha);
@@ -44,13 +46,17 @@ const login = async () => {
           router.push({ name: 'user-center' });
         }
       })
-      .catch(errorHandler);
+      .catch(errorHandler)
+      .finally(() => {
+        loading.value = false;
+      });
   },
   register = async () => {
     if (!username.value || !password.value || !email.value) {
       naiveui.message.error('注册信息不能为空');
       return;
     }
+    loading.value = true;
     await recaptchaLoaded();
     const recaptcha = await executeRecaptcha('login');
     console.log(recaptcha);
@@ -63,7 +69,34 @@ const login = async () => {
       .then((res: any) => {
         naiveui.message.success(res.data?.detail);
       })
-      .catch(errorHandler);
+      .catch(errorHandler)
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
+const receiveType = ref('email'),
+  getTemporaryPassword = async () => {
+    if (!username.value) {
+      naiveui.message.error('用户名不能为空');
+      return;
+    }
+    loading.value = true;
+    await recaptchaLoaded();
+    const recaptcha = await executeRecaptcha('login');
+    Axios.post('/user/get_temporary_password/', {
+      username: username.value,
+      email: email.value,
+      type: receiveType.value,
+      recaptcha: recaptcha,
+    })
+      .then((res: any) => {
+        naiveui.message.success(res.data?.detail);
+      })
+      .catch(errorHandler)
+      .finally(() => {
+        loading.value = false;
+      });
   };
 </script>
 
@@ -72,11 +105,11 @@ const login = async () => {
     <n-card style="max-width: 35rem; margin: 10vh 0">
       <n-tabs
         animated
-        default-value="signin"
+        default-value="login"
         size="large"
         justify-content="space-evenly"
       >
-        <n-tab-pane name="signin" tab="登录">
+        <n-tab-pane name="login" tab="登录">
           <n-form style="padding: 1rem; margin-top: 0.5rem">
             <n-form-item-row label="用户名">
               <n-input v-model:value="username" />
@@ -115,6 +148,36 @@ const login = async () => {
             <n-form-item-row>
               <n-button type="primary" block secondary strong @click="register">
                 注册
+              </n-button>
+            </n-form-item-row>
+          </n-form>
+        </n-tab-pane>
+
+        <n-tab-pane name="temporaryPassword" tab="获取临时密码">
+          <n-form style="padding: 1rem; margin-top: 0.5rem">
+            <n-form-item-row label="用户名">
+              <n-input v-model:value="username" />
+            </n-form-item-row>
+            <n-form-item-row label="密码接收方式">
+              <n-radio-group v-model:value="receiveType">
+                <n-space>
+                  <n-radio value="email"> 邮箱 </n-radio>
+                  <n-radio value="mobile" disabled> 手机号 </n-radio>
+                </n-space>
+              </n-radio-group>
+            </n-form-item-row>
+            <n-form-item-row label="邮箱" v-if="receiveType === 'email'">
+              <n-input v-model:value="email" />
+            </n-form-item-row>
+            <n-form-item-row>
+              <n-button
+                type="primary"
+                block
+                secondary
+                strong
+                @click="getTemporaryPassword"
+              >
+                获取临时密码
               </n-button>
             </n-form-item-row>
           </n-form>

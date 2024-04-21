@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useStore, useVerifyStore } from '../stores';
+import { useStore, useSecurityCheckStore } from '../stores';
 import { Axios, errorHandler } from '../plugins/axios';
 import naiveui from '../plugins/naiveui';
 import {
@@ -14,41 +14,55 @@ import { _ } from '../i18n';
 //@ts-ignore
 const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
 const store = useStore(),
-  verifyStore = useVerifyStore();
+  securityCheckStore = useSecurityCheckStore();
 
 const type = ref(null),
+  sending_code = ref(false),
   code = ref('');
 
 const sendCode = async () => {
-  await recaptchaLoaded();
-  const recaptcha = await executeRecaptcha('verify');
-  Axios.post('/user/verify/send_code/', {
-    type: type.value,
-    recaptcha: recaptcha,
-  })
-    .then(res => {
-      naiveui.message.success(res.data?.detail);
+    sending_code.value = true;
+    await recaptchaLoaded();
+    const recaptcha = await executeRecaptcha('verify');
+    Axios.post('/user/security_check/send_code/', {
+      type: type.value,
+      recaptcha: recaptcha,
     })
-    .catch(errorHandler);
-};
-const verifyCode = () => {
-  Axios.post('/user/verify/verify_code/', {
-    code: code.value,
-  })
-    .then(res => {
-      naiveui.message.success(res.data?.detail);
-      verifyStore.verified_at = Date.now();
-      verifyStore.show_verify = false;
-      type.value = null;
-      verifyStore.callback();
+      .then(res => {
+        naiveui.message.success(res.data?.detail);
+      })
+      .catch(errorHandler)
+      .finally(() => {
+        sending_code.value = false;
+      });
+  },
+  verifyCode = () => {
+    Axios.post('/user/security_check/verify_code/', {
+      code: code.value,
     })
-    .catch(errorHandler);
-};
+      .then(verifySuccess)
+      .catch(errorHandler);
+  },
+  verifyTotp = () => {
+    Axios.post('/user/security_check/verify_totp/', {
+      code: code.value,
+    })
+      .then(verifySuccess)
+      .catch(errorHandler);
+  },
+  verifySuccess = (res: any) => {
+    naiveui.message.success(res.data?.detail);
+    securityCheckStore.verified_at = Date.now();
+    securityCheckStore.show_verify = false;
+    type.value = null;
+    code.value = '';
+    securityCheckStore.callback();
+  };
 </script>
 
 <template>
   <n-modal
-    v-model:show="verifyStore.show_verify"
+    v-model:show="securityCheckStore.show_verify"
     preset="card"
     style="max-width: 800px; width: 90vw"
     title="身份验证"
@@ -107,7 +121,9 @@ const verifyCode = () => {
         <n-text style="font-size: 1.1em">
           验证邮箱：{{ store.user.email }}
         </n-text>
-        <n-button type="primary" @click="sendCode"> 点击获取验证码 </n-button>
+        <n-button type="primary" @click="sendCode" :loading="sending_code">
+          点击获取验证码
+        </n-button>
         <n-divider />
         <n-input-group>
           <n-input
@@ -118,6 +134,16 @@ const verifyCode = () => {
           <n-button type="primary" @click="verifyCode"> 确认 </n-button>
         </n-input-group>
       </n-space>
+    </div>
+    <div v-if="type === 'totp'">
+      <n-input-group>
+        <n-input
+          placeholder="TOTP验证码"
+          v-model:value="code"
+          style="margin-right: 20px; max-width: 200px"
+        />
+        <n-button type="primary" @click="verifyTotp"> 确认 </n-button>
+      </n-input-group>
     </div>
   </n-modal>
 </template>

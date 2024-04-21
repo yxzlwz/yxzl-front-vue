@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AccountSecurityCheck: typeof import('./src/components/AccountSecurityCheck.vue')['default']
     AccountVerify: typeof import('./src/components/AccountVerify.vue')['default']
     LinkCard: typeof import('./src/components/LinkCard.vue')['default']
     MdEditor: typeof import('./src/components/MdEditor.vue')['default']
@@ -50,6 +51,8 @@ declare module 'vue' {
     NPopconfirm: typeof import('naive-ui')['NPopconfirm']
     NPopover: typeof import('naive-ui')['NPopover']
     NPopselect: typeof import('naive-ui')['NPopselect']
+    NQrCode: typeof import('naive-ui')['NQrCode']
+    NRadio: typeof import('naive-ui')['NRadio']
     NRadioButton: typeof import('naive-ui')['NRadioButton']
     NRadioGroup: typeof import('naive-ui')['NRadioGroup']
     NSpace: typeof import('naive-ui')['NSpace']

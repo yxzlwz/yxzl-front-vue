@@ -30,6 +30,8 @@ export const useStore = defineStore('__default__', {
         is_superuser: false,
         verified: false,
       };
+      const securityCheckStore = useSecurityCheckStore();
+      securityCheckStore.reset();
     },
   },
   getters: {
@@ -52,14 +54,14 @@ export const useMenuStore = defineStore('menu', {
   persist: false,
 });
 
-export const useVerifyStore = defineStore('verify', {
+export const useSecurityCheckStore = defineStore('securityCheck', {
   state: () => ({
     verified_at: 0,
     callback: () => {},
     show_verify: false,
   }),
   actions: {
-    checkVerified(callback: Function) {
+    check(callback: Function) {
       this.callback = callback;
       console.log(Date.now() - this.verified_at);
       if (this.verified) {
@@ -68,6 +70,11 @@ export const useVerifyStore = defineStore('verify', {
       } else {
         this.show_verify = true;
       }
+    },
+    reset() {
+      this.verified_at = 0;
+      this.show_verify = false;
+      this.callback = () => {};
     },
   },
   getters: {
