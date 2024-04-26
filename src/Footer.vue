@@ -51,8 +51,7 @@ import router from './router';
     <n-divider class="footer-divider" />
     <div style="text-align: center; padding: 20px">
       <n-text depth="3">
-        © 2018-{{ new Date().getFullYear() }} {{ _('site.name') }} ·
-        鲁ICP备2020034769号-3
+        © 2018-{{ new Date().getFullYear() }} {{ _('site.name') }}
       </n-text>
     </div>
   </n-layout-footer>
