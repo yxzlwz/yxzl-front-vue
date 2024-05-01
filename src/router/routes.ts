@@ -46,6 +46,15 @@ export const routes = [
     },
   },
   {
+    path: '/totp/',
+    name: 'totp',
+    component: () => import('../pages/totp/index.vue'),
+    meta: {
+      showSider: false,
+      requiredLogin: true,
+    },
+  },
+  {
     path: '/yiyan/show/',
     name: 'yiyan-show',
     component: () => import('../pages/yiyan/show.vue'),

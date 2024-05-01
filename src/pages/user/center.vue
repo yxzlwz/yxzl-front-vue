@@ -91,6 +91,23 @@ const new_password = ref(['', '']),
       })
       .catch(errorHandler);
   };
+
+const apiKeys = ref([]),
+  getApiKeys = () => {
+    Axios.get('/user/apikey/')
+      .then(res => {
+        apiKeys.value = res.data.results;
+      })
+      .catch(errorHandler);
+  },
+  createApiKey = () => {
+    Axios.post('/user/apikey/', {})
+      .then(() => {
+        getApiKeys();
+      })
+      .catch(errorHandler);
+  };
+getApiKeys();
 </script>
 
 <template>
@@ -132,7 +149,9 @@ const new_password = ref(['', '']),
             </n-popconfirm> -->
           </n-space>
         </div>
+
         <n-divider />
+
         <n-h3>基本信息</n-h3>
         <n-form :inline="!isMobile" label-width="520px">
           <n-form-item label="头像URL">
@@ -212,8 +231,35 @@ const new_password = ref(['', '']),
           </n-form-item>
         </n-form>
       </n-tab-pane>
+
       <n-tab-pane name="billing" tab="财务相关"> 七里香 </n-tab-pane>
-      <n-tab-pane name="admin" tab="管理员"> 七里香 </n-tab-pane>
+
+      <n-tab-pane name="developer" tab="开发者">
+        <n-h3> API Key </n-h3>
+        <n-table :bordered="false" :single-line="false">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Token</th>
+              <th>Secret</th>
+              <th>过期时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in apiKeys" :key="item.id">
+              <td>{{ item.id }}</td>
+              <td>{{ item.token }}</td>
+              <td>{{ item.secret }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </n-table>
+        <n-button style="margin-top: 2em" @click="createApiKey">
+          创建
+        </n-button>
+      </n-tab-pane>
     </n-tabs>
   </n-card>
 </template>

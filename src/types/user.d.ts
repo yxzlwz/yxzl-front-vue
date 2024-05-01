@@ -8,4 +8,6 @@ interface UserDetail extends User {
   email: string;
   is_superuser: boolean;
   verified: boolean;
+
+  totp?: boolean;
 }

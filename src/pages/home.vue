@@ -15,6 +15,11 @@ import LinkCard from '../components/LinkCard.vue';
       description="异想之旅精选句子库，支持API"
       :to="{ name: 'yiyan-show' }"
     />
+    <LinkCard
+      title="🔑TOTP"
+      description="在线TOTP保存服务，支持端到端加密"
+      :to="{ name: 'totp' }"
+    />
   </n-space>
 </template>
 

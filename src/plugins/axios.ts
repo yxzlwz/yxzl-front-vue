@@ -23,6 +23,7 @@ Axios.defaults.transformResponse = [
 
 export const errorHandler = (err: any) => {
   let message = '未知错误';
+  console.log(err);
   if (err.response?.data?.detail) message = err.response.data.detail;
   else if (!err.response?.status) message = '网络异常，请检查网络连接';
   naiveui.message.error(message);

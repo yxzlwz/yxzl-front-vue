@@ -9,9 +9,8 @@
         : 'calc(272px - var(--side-padding)) 1fr auto',
     }"
   >
-    <n-text tag="div" class="ui-logo" :depth="1">
+    <n-text tag="div" class="ui-logo" :depth="1" @click="router.push('/')">
       <img src="/logo.png" />
-      <!-- <span v-if="!isMobile"> 异想之旅 </span> -->
       <span> {{ _('site.name') }} </span>
     </n-text>
     <div
@@ -89,6 +88,7 @@ import { ref, watch, computed } from 'vue';
 import { MenuOutline } from '@vicons/ionicons5';
 import { isMobile } from './consts';
 import { useStore, useMenuStore } from './stores';
+import router from './router';
 import { languageOptions } from './consts/options';
 import handleMenuChange from './utils/handleMenuChange';
 import { NPopselect, NButton } from 'naive-ui';
