@@ -1,12 +1,16 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, h } from 'vue';
 import { isMobile } from '../../consts';
 import { Axios, errorHandler } from '../../plugins/axios';
 import { _ } from '../../i18n';
 import { CreateOutline, TrashBinOutline } from '@vicons/ionicons5';
-import { FormRules } from 'naive-ui';
+import { NSpace, NText, NInput, FormRules } from 'naive-ui';
 import { TOTP } from 'totp-generator';
 import naiveui from '../../plugins/naiveui';
+import { useKeyStore } from '../../stores';
+import { cbc_encrypt, cbc_decrypt, sha512 } from '../../utils/encrypt';
+
+const keyStore = useKeyStore();
 
 const time = ref(0),
   totp = (secret: string, _time: any) => {
@@ -25,8 +29,47 @@ const totpData = ref<Totp>({ config: [], use_aes: false }),
           res.data.config = [];
         } else if (typeof res.data.config === 'string') {
           if (res.data.use_aes) {
+            if (sha512(aesKey.value) === res.data.aes_key) {
+              res.data.config = cbc_decrypt(res.data.config, aesKey.value);
+              res.data.config = JSON.parse(res.data.config);
+            } else {
+              naiveui.modal.create({
+                title: '解密AES数据',
+                content: () =>
+                  h(NInput, {
+                    placeholder: '请输入AES密钥',
+                    type: 'password',
+                    showPasswordOn: 'mousedown',
+                    value: aesKey.value,
+                    onUpdateValue: v => (aesKey.value = v),
+                  }),
+                preset: 'dialog',
+                positiveText: '确认',
+                maskClosable: false,
+                onPositiveClick() {
+                  if (!aesKey.value) {
+                    naiveui.message.error('请输入AES密钥');
+                    return;
+                  }
+                  if (sha512(aesKey.value) === res.data.aes_key) {
+                    res.data.config = cbc_decrypt(
+                      res.data.config,
+                      aesKey.value
+                    );
+                    res.data.config = JSON.parse(res.data.config);
+                    totpData.value = res.data;
+                    keyStore.totp_aes = aesKey.value;
+                  } else {
+                    naiveui.message.error('AES密钥错误');
+                    aesKey.value = '';
+                    getTotpData();
+                    return;
+                  }
+                },
+              });
+              return;
+            }
           } else {
-            console.log(123);
             res.data.config = JSON.parse(res.data.config);
           }
         }
@@ -89,24 +132,91 @@ const addData = ref({
         i.issuer_name !== item.issuer_name
     );
   },
-  doDelete = (item: TotpItem) => {
+  doDelete = (item: TotpItem | null = null) => {
     naiveui.dialog.warning({
-      title: '你确定要删除该TOTP吗？',
-      content: `这是你删除${item.issuer_name} - ${item.name}前的最后警告。我们强烈建议你在确保设置好账号恢复方式后再执行删除操作。`,
+      title: `你确定要删除TOTP吗？`,
+      content:
+        item === null
+          ? `你确定要删除该所有TOTP信息吗？这是最后警告。`
+          : `这是你删除${item.issuer_name} - ${item.name}前的最后警告。我们强烈建议你在确保设置好账号恢复方式后再执行删除操作。`,
       positiveText: '确定删除',
       negativeText: '取消',
       onPositiveClick: () => {
-        totpData.value.config = totpData.value.config.filter(
-          i =>
-            i.secret !== item.secret ||
-            i.name !== item.name ||
-            i.issuer_name !== item.issuer_name
-        );
+        if (item === null) {
+          totpData.value.config = [];
+          totpData.value.use_aes = false;
+          totpData.value.aes_key = '';
+        } else {
+          totpData.value.config = totpData.value.config.filter(
+            i =>
+              i.secret !== item.secret ||
+              i.name !== item.name ||
+              i.issuer_name !== item.issuer_name
+          );
+        }
         Axios.post('/totp/', {
           config: JSON.stringify(totpData.value.config),
+          use_aes: totpData.value.use_aes,
+          aes_key: totpData.value.aes_key,
         })
           .then(_res => {
             naiveui.message.success('删除成功');
+          })
+          .catch(errorHandler);
+      },
+    });
+  };
+
+const aesKey = ref(keyStore.totp_aes),
+  useAes = () => {
+    naiveui.modal.create({
+      title: '启用AES加密',
+      content: () =>
+        h(
+          NSpace,
+          {
+            vertical: true,
+            style: { margin: '20px 0' },
+          },
+          {
+            default: () => [
+              h(
+                NText,
+                {},
+                {
+                  default: () =>
+                    '按下确认后，你的所有TOTP数据将被AES加密，异想之旅将无法读取这些数据。设置密钥后，以后每次访问TOTP都需要输入密钥才能查看内容。请牢记密钥，该密钥只能通过删除所有AES信息重置。',
+                }
+              ),
+              h(NInput, {
+                placeholder: '请输入AES密钥',
+                type: 'password',
+                showPasswordOn: 'mousedown',
+                value: aesKey.value,
+                onUpdateValue: v => (aesKey.value = v),
+              }),
+            ],
+          }
+        ),
+      preset: 'dialog',
+      positiveText: '确认',
+      negativeText: '取消',
+      onPositiveClick() {
+        if (!aesKey.value) {
+          naiveui.message.error('请输入AES密钥');
+          return;
+        }
+        Axios.post('/totp/', {
+          config: cbc_encrypt(
+            JSON.stringify(totpData.value.config),
+            aesKey.value
+          ),
+          use_aes: true,
+          aes_key: sha512(aesKey.value),
+        })
+          .then(_res => {
+            naiveui.message.success('设置成功');
+            getTotpData();
           })
           .catch(errorHandler);
       },
@@ -159,7 +269,12 @@ const addData = ref({
     }"
   >
     <n-form-item path="secret" label="密钥">
-      <n-input v-model:value="addData.secret" placeholder="密钥信息" />
+      <n-input
+        v-model:value="addData.secret"
+        placeholder="密钥信息"
+        type="password"
+        show-password-on="mousedown"
+      />
     </n-form-item>
     <n-form-item path="name" label="账号">
       <n-input v-model:value="addData.name" placeholder="可任填" />
@@ -168,7 +283,16 @@ const addData = ref({
       <n-input v-model:value="addData.issuer_name" placeholder="可任填" />
     </n-form-item>
     <n-form-item label="">
-      <n-button @click="addTotp" type="primary"> 添加 </n-button>
+      <n-space>
+        <n-button @click="addTotp" type="primary"> 添加 </n-button>
+        <n-button
+          @click="useAes"
+          v-if="totpData.config.length && !totpData.use_aes"
+        >
+          使用AES加密
+        </n-button>
+        <n-button @click="doDelete(null)" type="error"> 重置数据 </n-button>
+      </n-space>
     </n-form-item>
   </n-form>
 </template>

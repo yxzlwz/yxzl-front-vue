@@ -88,4 +88,13 @@ export const useSecurityCheckStore = defineStore('securityCheck', {
   },
 });
 
+export const useKeyStore = defineStore('key', {
+  state: () => ({
+    totp_aes: '',
+  }),
+  persist: {
+    storage: window.sessionStorage,
+  },
+});
+
 export default useStore;
